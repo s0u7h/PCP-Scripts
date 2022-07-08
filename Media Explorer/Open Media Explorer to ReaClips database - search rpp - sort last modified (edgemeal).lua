@@ -11,7 +11,7 @@
 -- v1.02.1. Scroll list to top after sort.
 -- v1.02... Make filelist global, unselect files in list before sorting.
 
-
+--
 
 -- USER SETTINGS -- USER SETTINGS -- USER SETTINGS -- USER SETTINGS --
 local folder = "ReaClips"
