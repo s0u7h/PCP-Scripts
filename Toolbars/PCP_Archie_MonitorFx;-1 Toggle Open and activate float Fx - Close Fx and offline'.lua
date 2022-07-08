@@ -18,7 +18,7 @@
     -----------------------------------------------------------------------------
 
 
-    local Num_Fx = {3};
+    local Num_Fx = {1};
     local Close_NoBypassOffline = {2};
 
     local mastTrack = reaper.GetMasterTrack();
