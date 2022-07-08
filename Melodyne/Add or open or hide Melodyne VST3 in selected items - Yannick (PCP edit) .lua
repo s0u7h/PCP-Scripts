@@ -1,4 +1,6 @@
---edited slightly by PCP to open in chain, to enable docking
+-- edited by PCP to open in chain, enable docking and to close (hide) the chain if open.
+-- this imitates the Studio One behaviour
+-- on first use in a project the chain should be dragged to the preferred docker (i.e. top). It should then open there on subsequent instances.
 
 -- @description Yannick_Add or open Melodyne VST3 in selected items
 -- @author Yannick
