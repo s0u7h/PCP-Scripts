@@ -78,6 +78,125 @@ function SaveCurrentProject()
   end
 end
 
+function SaveSelTracksSlot1()
+  --me2beats snippet
+  local r = reaper
+  sel_tracks_str = ''
+  for i = 0, r.CountSelectedTracks()-1 do
+    sel_tracks_str = sel_tracks_str..r.GetTrackGUID(r.GetSelectedTrack(0,i))
+  end
+
+  r.DeleteExtState('me2beats_save-restore', 'sel_tracks_1', 0)
+  r.SetExtState('me2beats_save-restore', 'sel_tracks_1', sel_tracks_str, 0)
+end
+
+function SaveSelTracksSlot2()
+  --me2beats snippet
+  local r = reaper
+
+  sel_tracks_str = ''
+  for i = 0, r.CountSelectedTracks()-1 do
+    sel_tracks_str = sel_tracks_str..r.GetTrackGUID(r.GetSelectedTrack(0,i))
+  end
+
+  r.DeleteExtState('me2beats_save-restore', 'sel_tracks_2', 0)
+  r.SetExtState('me2beats_save-restore', 'sel_tracks_2', sel_tracks_str, 0)
+
+end
+
+function RestoreSelTracksSlot1()
+    --me2beats snippet
+  local r = reaper; local function nothing() end; local function bla() r.defer(nothing) end
+
+  local sel_tracks_str = r.GetExtState('me2beats_save-restore', 'sel_tracks_1')
+  if not sel_tracks_str or sel_tracks_str == '' then bla() return end
+
+  r.Main_OnCommand(40297,0) -- unselect all tracks
+
+  for guid in sel_tracks_str:gmatch'{.-}' do
+    local tr = r.BR_GetMediaTrackByGUID(0, guid)
+    if tr then r.SetTrackSelected(tr,1) end
+  end
+end
+
+function RestoreSelTracksSlot12()
+  --me2beats snippet
+local r = reaper; local function nothing() end; local function bla() r.defer(nothing) end
+
+local sel_tracks_str_1 = r.GetExtState('me2beats_save-restore', 'sel_tracks_1')
+local sel_tracks_str_2 = r.GetExtState('me2beats_save-restore', 'sel_tracks_2')
+
+if not (sel_tracks_str_1 or sel_tracks_str_2) or (sel_tracks_str_1 == '' and sel_tracks_str_1 == '') then bla() return end
+
+for guid in sel_tracks_str_1:gmatch'{.-}' do
+  local tr = r.BR_GetMediaTrackByGUID(0, guid)
+  if tr then r.SetTrackSelected(tr,1) end
+end
+
+for guid in sel_tracks_str_2:gmatch'{.-}' do
+  local tr = r.BR_GetMediaTrackByGUID(0, guid)
+  if tr then r.SetTrackSelected(tr,1) end
+end
+end
+
+function SaveProjectTab()
+
+  local cur_p = reaper.EnumProjects(-1, 0)
+  local cur_p_str = tostring(cur_p):sub(-16)
+  
+  local ext_sec, ext_key = 'reaclip_og_save-restore', 'active_proj_tab'
+  
+  reaper.DeleteExtState(ext_sec, ext_key, 0)
+  reaper.SetExtState(ext_sec, ext_key, cur_p_str, 0)
+
+end
+
+function RestoreProjectTab()
+    --me2beats snippet
+  local r = reaper; local function nothing() end; local function bla() r.defer(nothing) end
+
+  function get_cur_proj_tab_number()
+    retval = nil
+    for p = 1, 1000 do
+      retval = r.EnumProjects(p, '')
+      if not retval then projects = p break end
+    end
+    local retval_0  = r.EnumProjects(-1, '')
+    for p = 1, projects do
+      retval  = r.EnumProjects(p-1, '')
+      if retval == retval_0 then cur_proj_tab = p break end
+    end
+    retval = nil; return cur_proj_tab-1, projects
+  end
+
+
+  local ext_sec, ext_key = 'reaclip_og_save-restore', 'active_proj_tab'
+  saved_p_str = r.GetExtState(ext_sec, ext_key)
+  if not saved_p_str or saved_p_str == '' then bla() return end
+
+
+  cur_p_iter, projects = get_cur_proj_tab_number()
+
+
+  for i = 0, projects-1 do
+    local p = r.EnumProjects(i, 0)
+    if saved_p_str == tostring(p):sub(-16) then iter = i break end
+  end
+
+  if not iter or iter == cur_p_iter then bla() return end
+
+  d = math.abs(iter-cur_p_iter)-1
+  d2 = projects-d
+
+  if iter > cur_p_iter then if d < d2 then a = 40861 else d = d2 -2 a = 40862 end
+  else if d < d2 then a = 40862 else d = d2 -2 a = 40861 end end
+
+  for i = 0,d do r.Main_OnCommand(a,0) end -- prev/next project tab
+
+  -- r.PreventUIRefresh(-1) r.Undo_EndBlock('Restore saved project tab', 2)
+end
+
+
 function SaveReaClip()
 -- this code adapted from paat's auto-save script, adding a user prompt and a default ReaClips subdirectory
   retval, savepath = reaper.get_config_var_string("defsavepath")
@@ -110,7 +229,8 @@ function SaveReaClip()
   end
   
   --open a new project tab and open this same project in it. slot 1 will be our OG project. slot 2 is where we'll resave a cropped version of the OG project as a ReaClip.
-  reaper.Main_OnCommand(reaper.NamedCommandLookup('_RS1ad9b3e745ad836bebeee40ba9e7a5279a356ea8'), 0)  -- Script: me2beats_Save active project tab, slot 1.lua
+  --reaper.Main_OnCommand(reaper.NamedCommandLookup('_RS1ad9b3e745ad836bebeee40ba9e7a5279a356ea8'), 0)  -- Script: me2beats_Save active project tab, slot 1.lua
+  SaveProjectTab()
   reaper.Main_SaveProjectEx(proj, new_path, 0) --silently saves to Reaclips folder without copying audio files - still atlased to the original
   reaper.Main_OnCommand(41929, 0)   -- New project tab (ignore default template)
   reaper.Main_openProject("noprompt:" .. new_path)
@@ -123,12 +243,12 @@ function SaveReaClip()
   reaper.Main_OnCommand(40289, 0) --Item: Unselect (clear selection of) all items
   reaper.Main_OnCommand(reaper.NamedCommandLookup('_BR_FOCUS_TRACKS'), 0) --SWS/BR: Focus tracks
   reaper.Main_OnCommand(reaper.NamedCommandLookup('_SWS_SELROUTED'), 0) -- SWS: Select tracks with active routing to selected track(s)  
-  reaper.Main_OnCommand(reaper.NamedCommandLookup('_RS0549eb7e7dc511aaba72563bf42874c6c5877b95'), 0)   --Script: me2beats_Save selected tracks, slot 1.lua
+  SaveSelTracksSlot1()
   reaper.Main_OnCommand(reaper.NamedCommandLookup('_RS07454ab62d927454fdbf507028b3e5299d3619dd'), 0) -- Script: cfillion_Select source tracks of selected tracks receives recursively.lua
-  reaper.Main_OnCommand(reaper.NamedCommandLookup('_RS71c2ed15049b99550b96ca77f6b1cd396f3b56cb'), 0)  --Script: me2beats_Save selected tracks, slot 2.lua
-  reaper.Main_OnCommand(reaper.NamedCommandLookup('_RS51083d71f45b97fc7fc3bc03abac857476664994'), 0) --Script: me2beats_Restore selected tracks, slot 1.lua
+  SaveSelTracksSlot2()
+  RestoreSelTracksSlot1()
   reaper.Main_OnCommand(reaper.NamedCommandLookup('_RS442c61972c3d71aaa886a5a47d809df69645bffa'), 0) -- Script: cfillion_Select destination tracks of selected tracks sends recursively.lua
-  reaper.Main_OnCommand(reaper.NamedCommandLookup('_RSde5e5ba9a6c07884d4472bd0c76e1c4cb6603af3'), 0)   --Script: me2beats_Restore selected tracks, slots 1+2 (add to selection).lua
+  RestoreSelTracksSlot12()
   reaper.Main_OnCommand(reaper.NamedCommandLookup('_SWS_TOGTRACKSEL'), 0) --SWS: Toggle (invert) track selection
   reaper.Main_OnCommand(reaper.NamedCommandLookup('_S&M_REMOVE_TR_GRP'), 0) --SWS/S&M: Remove track grouping for selected tracks // otherwise it could delete the tracks we want to save
   reaper.Main_OnCommand(reaper.NamedCommandLookup('_BR_FOCUS_TRACKS'), 0) --SWS/BR: Focus tracks
@@ -136,10 +256,13 @@ function SaveReaClip()
   
   -- auto-save it to the reaclips folder using paat's code: 
   -- still no way to set an option to save media with the file and set save path with Main_SaveProjectEx
-  reaper.Main_SaveProject(0, true) -- *now* the project is saved with any remaining source media.  the boolean true forces a 'save as', and user must check that 'copy media' is selected (should be default) as there's no way in REAPER to specify saving copies of source audio. the boolean true forces a 'save as'
+  reaper.Main_SaveProject(0, true) -- *now* the project is saved with any remaining source media.  the boolean true forces a 'save as', and user *should* just have to hit enter (i.e. click OK) but if any issues then check that 'copy media' is selected (should be default) as there's no way in REAPER to specify saving copies of source audio. the boolean true forces a 'save as'
+  reaper.Main_openProject("noprompt:" .. new_path)
   reaper.Main_OnCommand(42332, 0) -- File: Save project and render RPP-PROX - shouldn't prompt after last save. this will generate the preview in MX
+  --reaper.Main_SaveProjectEx(proj, new_path, 0) -- just stops it prompting to save again when closing the tab
+  reaper.Main_openProject("noprompt:" .. new_path)
   reaper.Main_OnCommand(40860, 0)  --Close current project tab
-  reaper.Main_OnCommand(reaper.NamedCommandLookup('_RSc4b08953457ee0ea58cc55d5ccce70175d05f0c5'), 0)  -- Script: me2beats_Restore saved project tab, slot 1.lua
+  RestoreProjectTab()
 end
 
 
