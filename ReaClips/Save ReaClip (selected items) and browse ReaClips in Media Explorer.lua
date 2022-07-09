@@ -2,26 +2,41 @@
 -- @author PCP
 -- @version 1.0
 -- @about
---   Save ReaClip (selected items) and browse ReaClips in Media Explorer
+-- Save ReaClip (selected items) and browse ReaClips in Media Explorer
 --
---   Requires SWS, JS_ReaScriptAPI and ReaPack (me2beats and cfillion repos)
+-- Requires SWS, JS_ReaScriptAPI and ReaPack (me2beats and cfillion repos)
 --
---   The script creates a folder under the default save path called "ReaClips". If you want to call this folder something elee,  change the setting below.
-
----- USER SETTINGS ---- 
-
-local path = "ReaClips"
-
------------------------
-
--- OPTIONAL: You can change this directory name and resave the script with the new name if you want  
--- to have different ReaClip directories, e.g. path = "Synth Presets" or "Beats".
+-- This script creates a folder under the default save path called "ReaClips". 
+-- To change the folder that this script saves to, use one of the "Save Reaclip - Preset X" scripts and
+-- change the "path" name in user settings. The preset script will create a different ReaClip directory, 
+-- e.g. path = "Synth Presets" or "Beats" or "Guitar Riffs" or "Melodyned Vocals"
 -- The script will create this subdirectory under your Default Save Path (set in Prefs) if it doesn't exist.
--- the action 'Script: Open Media Explorer to ReaClips database - search rpp - sort last modified (edgemeal).lua
--- instead of "ReaClips", i.e. "Synth Presets", or "Beats" or "Melodyned Clips"
 
--- Alternatively, an easier way to organise is just to keep everything in the ReaClips folder and set a custom metadata field for your ReaClips, and classify them
--- as Synth Presets or Beats or Melodies or whatever
+-- Running the preset scripts rather than duplicating this script and changing the 'path' value below means
+-- that if and when this script gets updated, the user settings will not be overwritten, as
+-- the preset scripts simply call the main parent script. (Thanks X-Raym for preset script template!)
+
+--[[
+
+This script creates a folder under the default save path called "ReaClips". 
+To change the folder that this script saves to, use one of the "Save Reaclip - Preset X" scripts and
+change the "path" name in user settings. The preset script will create a different ReaClip directory, 
+e.g. path = "Synth Presets" or "Beats" or "Guitar Riffs" or "Melodyned Vocals"
+The script will create this subdirectory under your Default Save Path (set in Prefs) if it doesn't exist.
+
+Running the preset scripts rather than duplicating this script and changing the 'path' value below means
+that if and when this script gets updated, the user settings will not be overwritten, as
+the preset scripts simply call the main parent script. (Thanks X-Raym for preset script template!)
+
+--]]
+-----------------------
+-- USER CONFIG AREA
+
+reaclips_path = "ReaClips"
+
+--END OF USER CONFIG AREA
+----------------------
+
 
 function SaveReaClipAndOpenMX()
   project_dirty = reaper.IsProjectDirty(proj)
@@ -79,7 +94,7 @@ function SaveReaClip()
     cancel()
   end
   
-  new_dir = savepath .. "/" .. path .. "/" .. filename 
+  new_dir = savepath .. "/" .. reaclips_path .. "/" .. filename 
   new_path = new_dir .. "/" .. filename .. ".RPP"
   
   if reaper.file_exists(new_path) then
@@ -143,7 +158,7 @@ function open_mx_to_reaclips_path()
   -- USER SETTINGS -- USER SETTINGS -- USER SETTINGS -- USER SETTINGS --
   local search = ".rpp"
   local wait = 0.600 -- Explorer needs time to update/populate, set Time in seconds to wait between actions.
-  local reaclips_folder = savepath .. path
+  local reaclips_folder = savepath .. reaclips_path
   
   -- setup >>
   if not reaper.APIExists('JS_Window_SetTitle') then
@@ -245,7 +260,10 @@ end
 
 reaper.PreventUIRefresh(1) -- Prevent UI refreshing. Uncomment it only if the script works.
 
-SaveReaClipAndOpenMX()
+if not preset_file_init then -- If the file is run directly, it will execute Init(), else it will wait for Init() to be called explicitely from the preset scripts (usually after having modified some global variable states).
+  SaveReaClipAndOpenMX()
+end
+
 
 reaper.PreventUIRefresh(-1) -- Restore UI Refresh. Uncomment it only if the script works.
 
