@@ -1,20 +1,15 @@
--- edited by PCP to open in chain, enable docking and to close (hide) the chain if open.
--- this imitates the Studio One behaviour
--- on first use in a project the chain should be dragged to the preferred docker (i.e. top). It should then open there on subsequent instances.
+-- PCP mod of Yannick script to open in chain, enable docking and to close (hide) the chain if open.
+-- This imitates the Studio One behaviour. For use on items. Recommended to bind to kb shortcut e.g. Ctrl-M
+-- On first run in a project the chain should be dragged to the preferred docker (i.e. top). 
+-- It should then open there automatically on subsequent runs.
 
--- @description Yannick_Add or open Melodyne VST3 in selected items
--- @author Yannick
--- @version 1.10
--- @about
---   go to the guide https://github.com/Yaunick/Yannick-ReaScripts-Guide/blob/main/Guide%20to%20using%20my%20scripts.md
--- @changelog
---   + fixed bug with MIDI and AUDIO items
--- @contact yannick-reascripts@yandex.ru
--- @donation https://telegra.ph/How-to-send-me-a-donation-04-14
+
+-- script forked from Yannick_Add or open Melodyne VST3 in selected items
+-- author Yannick yannick-reascripts@yandex.ru https://telegra.ph/How-to-send-me-a-donation-04-14
 
   -- USER SETTINGS --
   
-  docked_in_chain = true
+  docked_in_chain = true 
   
   
   -------------------
@@ -168,7 +163,7 @@
   for i=1, #t_sel_tracks do
     reaper.SetTrackSelected(t_sel_tracks[i], true)
   end
-  -- pcp tweak, check if take FX window is open and, if so, close it. 
+  -- check if take FX window is open and, if so, close it. 
 --reaper.ShowMessageBox(tostring(reaper.GetActiveTake(last_item)), " reaper.GetActiveTake(last_item)", 0)
 if reaper.TakeFX_GetOpen( reaper.GetActiveTake(last_item), last_number_melodyne, 1) == true then -- if Melodyne is open for current item then
         reaper.TakeFX_Show( reaper.GetActiveTake(last_item), last_number_melodyne, 0) -- close it i.e. hide FX chain
@@ -231,13 +226,8 @@ if reaper.TakeFX_GetOpen( reaper.GetActiveTake(last_item), last_number_melodyne,
             reaper.TakeFX_Show( reaper.GetActiveTake(last_item), last_number_melodyne, 3) -- else as a floating window
           end
           
-end
+  end
 
- reaper.Main_OnCommand(reaper.NamedCommandLookup('_SWS_RESTTIME5'), 0) -- restore time selection slot 5 
-
- -- end pcp tweak
-  
-  
-  
+  reaper.Main_OnCommand(reaper.NamedCommandLookup('_SWS_RESTTIME5'), 0) -- restore time selection slot 5 
   reaper.Undo_EndBlock('Add or open Melodyne VST3 in selected items', -1)
   reaper.PreventUIRefresh(-1)
