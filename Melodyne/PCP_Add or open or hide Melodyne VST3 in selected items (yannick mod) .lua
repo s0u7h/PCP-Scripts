@@ -1,11 +1,18 @@
--- PCP mod of Yannick script to open in chain, enable docking and to close (hide) the chain if open.
--- This imitates the Studio One behaviour. For use on items. Recommended to bind to kb shortcut e.g. Ctrl-M
--- On first run in a project the chain should be dragged to the preferred docker (i.e. top). 
--- It should then open there automatically on subsequent runs.
+--[[
+ * ReaScript Name: PCP_Add or open or hide Melodyne VST3 in selected items (yannick mod) 
+ * About: PCP mod of Yannick script to open in chain, enable docking and to close (hide) the chain if open. 
+   This imitates the Studio One behaviour. For use on items. Recommended to bind to kb shortcut e.g. Ctrl-M.
+   On first run in a project the chain should be dragged to the preferred docker (i.e. top). 
+   It should then open there automatically on subsequent runs.
 
 
--- script forked from Yannick_Add or open Melodyne VST3 in selected items
--- author Yannick yannick-reascripts@yandex.ru https://telegra.ph/How-to-send-me-a-donation-04-14
+   Script forked from Yannick_Add or open Melodyne VST3 in selected items
+   author Yannick yannick-reascripts@yandex.ru https://telegra.ph/How-to-send-me-a-donation-04-14
+ * Author: PCP
+ * Author URI: 
+ * Licence: GPL v3
+ * Version: 1.0
+--]]
 
   -- USER SETTINGS --
   
