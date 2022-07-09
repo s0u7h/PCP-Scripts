@@ -193,7 +193,6 @@ function RestoreProjectTab()
 
   for i = 0,d do r.Main_OnCommand(a,0) end -- prev/next project tab
 
-  -- r.PreventUIRefresh(-1) r.Undo_EndBlock('Restore saved project tab', 2)
 end
 
 
@@ -235,9 +234,8 @@ function SaveReaClip()
   reaper.Main_OnCommand(41929, 0)   -- New project tab (ignore default template)
   reaper.Main_openProject("noprompt:" .. new_path)
   
-  -- this section crops to the selected items and gets rid of any tracks that don't directly affect those items.
+  -- this section crops to the selected items and gets rid of extraneous tracks
   reaper.Main_OnCommand(reaper.NamedCommandLookup('_SWS_SELTRKWITEM'), 0) -- SWS: Select only track(s) with selected item(s)
-  -- reaper.Main_OnCommand(reaper.NamedCommandLookup('_SWS_SAFETIMESEL'), 0) -- SWS: Set time selection to selected items (skip if time selection exists)
   reaper.Main_OnCommand(40290, 0)-- Time selection: Set time selection to items
   reaper.Main_OnCommand(40049, 0) -- Time selection: Crop project to time selection
   reaper.Main_OnCommand(40289, 0) --Item: Unselect (clear selection of) all items
@@ -254,7 +252,7 @@ function SaveReaClip()
   reaper.Main_OnCommand(reaper.NamedCommandLookup('_BR_FOCUS_TRACKS'), 0) --SWS/BR: Focus tracks
   reaper.Main_OnCommand(40184, 0) -- Remove items/tracks/envelope points (depending on focus) - no prompting
   
-  -- auto-save it to the reaclips folder using paat's code: 
+  -- auto-save it to the reaclips folder and render a proxy, then close the tab silently: 
   -- still no way to set an option to save media with the file and set save path with Main_SaveProjectEx
   reaper.Main_SaveProject(0, true) -- *now* the project is saved with any remaining source media.  the boolean true forces a 'save as', and user *should* just have to hit enter (i.e. click OK) but if any issues then check that 'copy media' is selected (should be default) as there's no way in REAPER to specify saving copies of source audio. the boolean true forces a 'save as'
   reaper.Main_openProject("noprompt:" .. new_path)

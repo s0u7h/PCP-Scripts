@@ -12,7 +12,7 @@
 -- USER CONFIG AREA 1/2 ------------------------------------------------------
 
 -- Dependency Name
-local script = "Save ReaClip (selected items) and browse ReaClips in Media Explorer.lua" -- 1. The target script path relative to this file. If no folder, then it means preset file is right to the target script.
+local script = "Save ReaClip (selected items) and view in Media Explorer.lua" -- 1. The target script path relative to this file. If no folder, then it means preset file is right to the target script.
 
 -------------------------------------------------- END OF USER CONFIG AREA 1/2
 
