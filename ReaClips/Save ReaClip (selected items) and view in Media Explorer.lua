@@ -240,7 +240,8 @@ function SaveReaClip()
   reaper.Main_OnCommand(40049, 0) -- Time selection: Crop project to time selection
   reaper.Main_OnCommand(40289, 0) --Item: Unselect (clear selection of) all items
   reaper.Main_OnCommand(reaper.NamedCommandLookup('_BR_FOCUS_TRACKS'), 0) --SWS/BR: Focus tracks
-  reaper.Main_OnCommand(reaper.NamedCommandLookup('_SWS_SELROUTED'), 0) -- SWS: Select tracks with active routing to selected track(s)  
+ reaper.Main_OnCommand(40340, 0)  --Track: Unsolo all tracks
+ reaper.Main_OnCommand(reaper.NamedCommandLookup('_SWS_SELROUTED'), 0) -- SWS: Select tracks with active routing to selected track(s)  
   SaveSelTracksSlot1()
   reaper.Main_OnCommand(reaper.NamedCommandLookup('_RS07454ab62d927454fdbf507028b3e5299d3619dd'), 0) -- Script: cfillion_Select source tracks of selected tracks receives recursively.lua
   SaveSelTracksSlot2()
@@ -254,12 +255,15 @@ function SaveReaClip()
   
   -- auto-save it to the reaclips folder and render a proxy, then close the tab silently: 
   -- still no way to set an option to save media with the file and set save path with Main_SaveProjectEx
-  reaper.Main_SaveProject(0, true) -- *now* the project is saved with any remaining source media.  the boolean true forces a 'save as', and user *should* just have to hit enter (i.e. click OK) but if any issues then check that 'copy media' is selected (should be default) as there's no way in REAPER to specify saving copies of source audio. the boolean true forces a 'save as'
-  reaper.Main_openProject("noprompt:" .. new_path)
-  reaper.Main_OnCommand(42332, 0) -- File: Save project and render RPP-PROX - shouldn't prompt after last save. this will generate the preview in MX
-  --reaper.Main_SaveProjectEx(proj, new_path, 0) -- just stops it prompting to save again when closing the tab
-  reaper.Main_openProject("noprompt:" .. new_path)
-  reaper.Main_OnCommand(40860, 0)  --Close current project tab
+ 
+  
+-- reaper.Main_SaveProjectEx(proj, new_path, 0) -- just stops it prompting to save again when closing the tab
+--  reaper.Main_openProject("noprompt:" .. new_path)
+ reaper.Main_SaveProject(0, true) -- *now* the project is saved with any remaining source media.  the boolean true forces a 'save as', and user *should* just have to hit enter (i.e. click OK) but if any issues then check that 'copy media' is selected (should be default) as there's no way in REAPER to specify saving copies of source audio. the boolean true forces a 'save as'
+  reaper.Main_OnCommand(42332, 0) -- File: Save project and render RPP-PROX - shouldn't prompt after last save.
+  reaper.Main_SaveProjectEx(proj, new_path, 0) -- just stops it prompting to save again when closing the tab
+ --reaper.Main_openProject("noprompt:" .. new_path)
+ reaper.Main_OnCommand(40860, 0)  --Close current project tab
   RestoreProjectTab()
 end
 
@@ -363,7 +367,7 @@ function open_mx_to_reaclips_path()
     SetExplorerSearch(explorer, search)   -- set search field 
     init_time = reaper.time_precise() + wait
     SortDateModified()
-   -- reaper.Main_OnCommand(50124, 0)--Browser: Refresh
+    reaper.JS_WindowMessage_Send(explorer, "WM_COMMAND", 40018,0,0,0) -- refresh MX browser (PCP Nb - this seems necessary for folders but not databases)
   end
   
   function Initalize() 
@@ -381,7 +385,7 @@ end
 
 reaper.PreventUIRefresh(1) -- Prevent UI refreshing. Uncomment it only if the script works.
 
-if not preset_file_init then -- If the file is run directly, it will execute Init(), else it will wait for Init() to be called explicitely from the preset scripts (usually after having modified some global variable states).
+if not preset_file_init then -- If the file is run directly, it will execute SaveReaClipAndOpenMX(), else it will wait for Init() to be called explicitely from the preset scripts (usually after having modified some global variable states).
   SaveReaClipAndOpenMX()
 end
 
@@ -389,4 +393,5 @@ end
 reaper.PreventUIRefresh(-1) -- Restore UI Refresh. Uncomment it only if the script works.
 
 reaper.UpdateArrange() -- Update the arrangement (often needed)
+
 

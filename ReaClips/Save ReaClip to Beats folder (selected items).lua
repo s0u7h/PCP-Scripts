@@ -44,4 +44,4 @@ reaclips_path = "Beats"
 
 -- RUN -------------------------------------------------------------------
 
-SaveReaClipAndOpenMX() -- run the init function of the target script.
+SaveReaClipAndOpenMX() -- run the function of the target script.
