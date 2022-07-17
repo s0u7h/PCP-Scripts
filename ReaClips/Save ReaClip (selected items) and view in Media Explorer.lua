@@ -28,6 +28,7 @@ Running the preset scripts rather than duplicating this script and changing the 
 that if and when this script gets updated, the user settings will not be overwritten, as
 the preset scripts simply call the main parent script. (Thanks X-Raym for preset script template!)
 
+I had issues with some clips involving arps (stuck first notes in the RPP-Prox) until I turned off 'Inform plug-ins of offline rendering state' in 'Preferences/Plug-ins/VST'
 --]]
 -----------------------
 -- USER CONFIG AREA
@@ -202,8 +203,8 @@ function SaveReaClip()
   if savepath == "" then
     error_exit("Cannot save file - no default save path")
   end
-  
-  filename = os.date("%Y-%m-%d-%H_%M_%S")
+  osdate =  os.date("%Y-%m-%d-%H_%M_%S")
+  filename = osdate
   local rv, rv_str = reaper.GetUserInputs("Save ReaClip as..", 1, "ReaClip Name: ,extrawidth=250", filename)
   if rv==true then
     filename = rv_str
@@ -211,8 +212,8 @@ function SaveReaClip()
   if not rv then
     cancel()
   end
-  
-  new_dir = savepath .. "/" .. reaclips_path .. "/" .. filename 
+
+  new_dir = savepath .. "/" .. reaclips_path .. "/" .. filename
   new_path = new_dir .. "/" .. filename .. ".RPP"
   
   if reaper.file_exists(new_path) then
@@ -226,11 +227,11 @@ function SaveReaClip()
   if reaper.RecursiveCreateDirectory(new_dir, 0) == 0 then
     error_exit("Unable to create dir: \n" .. new_dir)
   end
-  
+
   --open a new project tab and open this same project in it. slot 1 will be our OG project. slot 2 is where we'll resave a cropped version of the OG project as a ReaClip.
   --reaper.Main_OnCommand(reaper.NamedCommandLookup('_RS1ad9b3e745ad836bebeee40ba9e7a5279a356ea8'), 0)  -- Script: me2beats_Save active project tab, slot 1.lua
   SaveProjectTab()
-  reaper.Main_SaveProjectEx(proj, new_path, 0) --silently saves to Reaclips folder without copying audio files - still atlased to the original
+  reaper.Main_SaveProjectEx(proj, new_path, 0) --silently saves to temp folder without copying audio files - still atlased to the original
   reaper.Main_OnCommand(41929, 0)   -- New project tab (ignore default template)
   reaper.Main_openProject("noprompt:" .. new_path)
   
@@ -257,12 +258,9 @@ function SaveReaClip()
   -- still no way to set an option to save media with the file and set save path with Main_SaveProjectEx
  
   
--- reaper.Main_SaveProjectEx(proj, new_path, 0) -- just stops it prompting to save again when closing the tab
---  reaper.Main_openProject("noprompt:" .. new_path)
+ reaper.Main_OnCommand(42332, 0) -- File: Save project and render RPP-PROX - shouldn't prompt after last save.
  reaper.Main_SaveProject(0, true) -- *now* the project is saved with any remaining source media.  the boolean true forces a 'save as', and user *should* just have to hit enter (i.e. click OK) but if any issues then check that 'copy media' is selected (should be default) as there's no way in REAPER to specify saving copies of source audio. the boolean true forces a 'save as'
-  reaper.Main_OnCommand(42332, 0) -- File: Save project and render RPP-PROX - shouldn't prompt after last save.
-  reaper.Main_SaveProjectEx(proj, new_path, 0) -- just stops it prompting to save again when closing the tab
- --reaper.Main_openProject("noprompt:" .. new_path)
+ reaper.Main_openProject("noprompt:" .. new_path) -- again, stops the prompt after rendering rpp-prox
  reaper.Main_OnCommand(40860, 0)  --Close current project tab
   RestoreProjectTab()
 end
