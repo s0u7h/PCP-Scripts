@@ -33,20 +33,36 @@ I had issues with some clips involving arps (stuck first notes in the RPP-Prox) 
 -----------------------
 -- USER CONFIG AREA
 
+-- best not to directly run this function, use one of the 'Save ReaClip'
+-- actions instead
 reaclips_path = "ReaClips"
+open_in_mx = true
 
 --END OF USER CONFIG AREA
 ----------------------
 
 
 function SaveReaClipAndOpenMX()
+
+  
+-- check items are selected before executing script
+sel_items = reaper.CountSelectedMediaItems(0)
+
+if sel_items == 0 then
+  reaper.ShowMessageBox('You must select item(s) before you can save a ReaClip', "No items selected", 0)
+else
+
+  --prompt to save open project first if dirty
   project_dirty = reaper.IsProjectDirty(proj)
   if project_dirty == 1 then 
     SaveCurrentProject()
   end
   SaveReaClip()
   --aper.defer(open_mx_to_reaclips_path())
-  open_mx_to_reaclips_path()
+  if open_in_mx == true then
+    open_mx_to_reaclips_path()
+  end
+end
 end
 
 function error_exit(message)
@@ -386,6 +402,8 @@ reaper.PreventUIRefresh(1) -- Prevent UI refreshing. Uncomment it only if the sc
 if not preset_file_init then -- If the file is run directly, it will execute SaveReaClipAndOpenMX(), else it will wait for Init() to be called explicitely from the preset scripts (usually after having modified some global variable states).
   SaveReaClipAndOpenMX()
 end
+
+
 
 
 reaper.PreventUIRefresh(-1) -- Restore UI Refresh. Uncomment it only if the script works.

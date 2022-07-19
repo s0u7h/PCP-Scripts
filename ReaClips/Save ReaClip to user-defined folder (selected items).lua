@@ -12,7 +12,7 @@
 -- USER CONFIG AREA 1/2 ------------------------------------------------------
 
 -- Dependency Name
-local script = "Save ReaClip (selected items) and view in Media Explorer.lua" -
+local script = "reaclip_core.lua" -- 1. The target script path relative to this file. If no folder, then it means preset file is right to the target script.
 
 -------------------------------------------------- END OF USER CONFIG AREA 1/2
 
@@ -38,7 +38,7 @@ end
 -- USER CONFIG AREA 2/2 ------------------------------------------------------
 
 reaclips_path = "ReaClips"
-
+open_in_mx = true
 -------------------------------------------------- END OF USER CONFIG AREA 2/2
 
 SaveReaClipAndOpenMX() -- run the init function of the target script.

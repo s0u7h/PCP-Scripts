@@ -1,16 +1,13 @@
 
 
 --[[
- * ReaScript Name: Save ReaClip to Melodyned Clips folder (selected items)
+ * ReaScript Name: Save ReaClip (selected items) - Preset 1
  * About: Edit the User Config Areas to make it work.
  * Author: PCP
  * Author URI: 
  * Licence: GPL v3
  * Version: 1.0
 --]]
-
--- TODO: alternatively save this in the project folder itself? 
--- prob  useful to keep melodyned stuff with the associated project.
 
 -- USER CONFIG AREA 1/2 ------------------------------------------------------
 
@@ -40,11 +37,11 @@ end
 
 -- USER CONFIG AREA 2/2 ------------------------------------------------------
 
-reaclips_path = "Melodyned Clips"
+reaclips_path = "ReaClips"
 open_in_mx = true
 
 -------------------------------------------------- END OF USER CONFIG AREA 2/2
 
 -- RUN -------------------------------------------------------------------
 
-SaveReaClipAndOpenMX() -- run the init function of the target script.
+SaveReaClipAndOpenMX() -- run the function of the target script.

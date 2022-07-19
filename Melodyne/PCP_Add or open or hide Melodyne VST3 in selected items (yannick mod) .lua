@@ -42,13 +42,74 @@
     
     
   function DockAllItemFX()
-    
+
+  --[[local number, list = reaper.JS_Window_ListFind("FX: Item", false)
+     if number > 0 then
+       for address in list:gmatch("[^,]+") do
+         local FX_win = reaper.JS_Window_HandleFromAddress(address)
+         local title = reaper.JS_Window_GetTitle(FX_win)
+        -- reaper.Dock_UpdateDockID(FX_win, 4)
+        -- reaper.DockWindowActivate(FX_win)
+        -- retval, isFloatingDocker = reaper.DockIsChildOfDock( FX_win )
+        -- reaper.ShowMessageBox(tostring(isFloatingDocker), "isFloatingDocker", 0)
+         --reaper.Main_OnCommand(41172,0)  --Dock/undock currently focused window
+  
+    end
+    end
     ---- whicHDock -1=not found, 0=bottom, 1=left, 2=top, 3=right, 4=floating 
-    local number, list = reaper.JS_Window_ListFind("FX: Item", false)
-    if number > 0 then
-      for address in list:gmatch("[^,]+") do
-        local FX_win = reaper.JS_Window_HandleFromAddress(address)
-        local title = reaper.JS_Window_GetTitle(FX_win)
+ local number, list = reaper.JS_Window_ListFind("FX: Item", false)
+   if number > 0 then
+     for address in list:gmatch("[^,]+") do
+       local FX_win = reaper.JS_Window_HandleFromAddress(address)
+       local title = reaper.JS_Window_GetTitle(FX_win)
+       retval, isFloatingDocker = reaper.DockIsChildOfDock( hwnd )
+  
+       if title:match("FX: Item ") then
+        -- reaper.Dock_UpdateDockID(FX_win, 2)
+        reaper.DockWindowAddEx(FX_win, title, true)
+        reaper.Dock_UpdateDockID(FX_win, 4)
+        reaper.DockWindowActivate(FX_win)
+      
+         reaper.DockWindowRefresh()
+      reaper.ShowMessageBox(tostring(number), "number", 0)
+              reaper.ShowMessageBox(tostring(title), "title", 0)
+              reaper.ShowMessageBox(tostring(FX_win), "FX_win", 0)
+             reaper.ShowMessageBox(tostring(isFloatingDocker), "isFloatingDocker", 0)
+       end
+      end
+      end
+    --]]
+    end
+    
+    
+    
+    
+    --[[hwnd = reaper.JS_Window_Find("FX: Item", true)
+    retval, isFloatingDocker = reaper.DockIsChildOfDock( hwnd )
+    if isFloatingDocker == true then
+      reaper.Main_OnCommand(41172,0)  --Dock/undock currently focused window
+    end
+    -- if hwnd and retval == -1 and isFloatingDocker == false then
+    
+    --local FX_win = reaper.JS_Window_HandleFromAddress(hwnd)
+    --local title = reaper.JS_Window_GetTitle(FX_win)
+   -- reaper.Dock_UpdateDockID( FX_win, 2 )
+   -- reaper.DockWindowAddEx( hwnd, tostring(FX_win), title, true )
+    --
+    --      local title = reaper.JS_Window_GetTitle(FX_win)
+          
+          reaper.ShowMessageBox(tostring(hwnd), "hwnd", 0)
+          reaper.ShowMessageBox(tostring(isFloatingDocker), "isFloatingDocker", 0)
+          reaper.ShowMessageBox(tostring(title), "title", 0)
+         reaper.ShowMessageBox(tostring(FX_win), "FX_win", 0)
+        
+        --   if title:match("FX: Item ") then
+            -- reaper.Dock_UpdateDockID(FX_win, 2)
+        --     reaper.DockWindowAddEx(FX_win, title, title, true)
+        --     reaper.DockWindowActivate(FX_win)
+            
+        --     reaper.DockWindowRefresh()
+           end
         
         --local cwd = reaper.GetConfigWantsDock(title) -- the dock id that the fx window will dock to
         
@@ -56,16 +117,8 @@
        --if cwd == 0 then
         --       
        -- end
-       
-      -- reaper.Show
-       -- reaper.ShowMessageBox(tostring(FX_win), "FX_win", 0)
-        reaper.Dock_UpdateDockID(tostring(FX_win), 2)
-        reaper.DockWindowRefresh()
-        
-     
-     end
-     end
-    end
+    --]]
+    
    --reaper.defer(function() end)      
         
   
